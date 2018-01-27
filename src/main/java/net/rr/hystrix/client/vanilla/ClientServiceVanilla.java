@@ -1,4 +1,4 @@
-package net.rr.hystrix.client;
+package net.rr.hystrix.client.vanilla;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class ClientService {
+public class ClientServiceVanilla {
 
-
-  @GetMapping("/service")
+  @GetMapping("/v1/service")
   public String remoteService(@RequestParam Long timeout) {
     return callService(timeout);
   }
 
-  @GetMapping("/serviceHystrix")
+  @GetMapping("/v1/serviceHystrix")
   public String remoteServiceHystrix(@RequestParam Long timeout) {
 
     HystrixCommand.Setter key = HystrixCommand.Setter
@@ -29,7 +28,7 @@ public class ClientService {
                 .withCircuitBreakerRequestVolumeThreshold(10)
                 .withCircuitBreakerSleepWindowInMilliseconds(5_000));
 
-    HystrixCommand<String> cmd = new HystrixCommand(key) {
+    HystrixCommand<String> cmd = new HystrixCommand<String>(key) {
       @Override
       protected String run() throws Exception {
         return callService(timeout);
