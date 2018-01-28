@@ -13,12 +13,12 @@ import org.springframework.web.client.RestTemplate;
 public class ClientServiceVanilla {
 
   @GetMapping("/v1/service")
-  public String remoteService(@RequestParam Long timeout) {
-    return callService(timeout);
+  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors) {
+    return callService(timeout, errors);
   }
 
   @GetMapping("/v1/serviceHystrix")
-  public String remoteServiceHystrix(@RequestParam Long timeout) {
+  public String remoteServiceHystrix(@RequestParam Long timeout, @RequestParam Double errors) {
 
     HystrixCommand.Setter key = HystrixCommand.Setter
         .withGroupKey(HystrixCommandGroupKey.Factory.asKey("service")).andCommandKey(
@@ -31,7 +31,7 @@ public class ClientServiceVanilla {
     HystrixCommand<String> cmd = new HystrixCommand<String>(key) {
       @Override
       protected String run() throws Exception {
-        return callService(timeout);
+        return callService(timeout, errors);
       }
 
       @Override
@@ -43,9 +43,10 @@ public class ClientServiceVanilla {
     return cmd.execute();
   }
 
-  private String callService(Long timeout) {
+  private String callService(Long timeout, Double errors) {
     RestTemplate restTemplate = new RestTemplate();
     return restTemplate
-        .getForObject("http://localhost:8080/remote?timeout=" + timeout, String.class);
+        .getForObject("http://localhost:8080/remote?timeout=" + timeout + "&errors=" + errors,
+            String.class);
   }
 }

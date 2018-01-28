@@ -9,24 +9,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RemoteController {
 
-  private final Semaphore semaphore = new Semaphore(10);
+  private final Semaphore semaphore = new Semaphore(20);
 
   private Random random = new Random();
 
   @GetMapping("/remote")
-  public String remoteService(@RequestParam Long timeout) {
+  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors) {
     try {
-      System.out.println("Available Permits: " + semaphore.availablePermits());
+//      System.out.println("Available Permits: " + semaphore.availablePermits());
       semaphore.acquire();
 
+//      System.out.println(random.hashCode() + " " + Thread.currentThread().getId());
       // Wait for the timeout
       Thread.sleep((long) (timeout + random.nextGaussian() * random.nextGaussian()));
 
-    } catch (Exception e) {
+//      System.out.println("Params: " + errors + " : " + Math.random());
+      if (Math.random() * 100 < errors) {
+        throw new RuntimeException("Error in remote service");
+      }
+
+    } catch (InterruptedException e) {
       e.printStackTrace();
     } finally {
       semaphore.release();
-      System.out.println("Releasing semaphore. Available: " + semaphore.availablePermits());
+//      System.out.println("Releasing semaphore. Available: " + semaphore.availablePermits());
     }
     return "Remote says hi!";
   }

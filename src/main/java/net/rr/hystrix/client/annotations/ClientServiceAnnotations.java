@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 public class ClientServiceAnnotations {
 
   @Autowired
-  private RemoteService remoteService;
+  private RemoteServiceInvoker remoteService;
 
   @Bean
   public RestTemplate buildRestTemplate(RestTemplateBuilder builder) {
@@ -21,12 +21,12 @@ public class ClientServiceAnnotations {
   }
 
   @RequestMapping("/v2/service")
-  public String remoteService(@RequestParam Long timeout) {
-    return remoteService.callService(timeout);
+  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors) {
+    return remoteService.callService(timeout, errors);
   }
 
   @RequestMapping("/v2/serviceHystrix")
-  public String remoteServiceHystrix(@RequestParam Long timeout) {
-    return remoteService.callServiceHystrix(timeout);
+  public String remoteServiceHystrix(@RequestParam Long timeout, @RequestParam Double errors) {
+    return remoteService.callServiceHystrix(timeout, errors);
   }
 }
