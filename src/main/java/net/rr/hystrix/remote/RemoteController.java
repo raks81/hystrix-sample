@@ -15,7 +15,8 @@ public class RemoteController {
   private Random random = new Random();
 
   @GetMapping("/remote")
-  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors) {
+  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors,
+      @RequestParam(defaultValue = "0.0") Double input) {
     try {
       semaphore.acquire();
       Thread.sleep((long) (timeout + random.nextGaussian() * random.nextGaussian()));
@@ -27,6 +28,6 @@ public class RemoteController {
     } finally {
       semaphore.release();
     }
-    return "Remote says hi!";
+    return Double.toString(input * 10);
   }
 }

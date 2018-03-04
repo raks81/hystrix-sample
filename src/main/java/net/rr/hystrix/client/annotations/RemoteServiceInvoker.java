@@ -16,7 +16,7 @@ public class RemoteServiceInvoker {
   }
 
 
-  public String callService(Long timeout, Double errors) {
+  public String callService(Long timeout, Double errors, Double input) {
     return restTemplate
         .getForObject("http://localhost:8080/remote?timeout=" + timeout + "&errors=" + errors,
             String.class);
@@ -25,15 +25,17 @@ public class RemoteServiceInvoker {
   @HystrixCommand(fallbackMethod = "handleBadService", commandProperties = {
       @HystrixProperty(name = "execution.isolation.thread.interruptOnTimeout", value = "true")
   })
-  public String callServiceHystrix(Long timeout, Double errors) {
+  public String callServiceHystrix(Long timeout, Double errors, Double input) {
     String response = null;
     response = restTemplate
-        .getForObject("http://localhost:8080/remote?timeout=" + timeout + "&errors=" + errors,
+        .getForObject(
+            "http://localhost:8080/remote?timeout=" + timeout + "&errors=" + errors + "&input="
+                + input,
             String.class);
     return response;
   }
 
-  private String handleBadService(Long timeout, Double errors) {
+  private String handleBadService(Long timeout, Double errors, Double input) {
     throw new RuntimeException("From fallback");
   }
 }

@@ -21,12 +21,14 @@ public class ClientServiceAnnotations {
   }
 
   @RequestMapping("/v2/service")
-  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors) {
-    return remoteService.callService(timeout, errors);
+  public String remoteService(@RequestParam Long timeout, @RequestParam Double errors,
+      @RequestParam(defaultValue = "0.0") Double input) {
+    return remoteService.callService(timeout, errors, input);
   }
 
   @RequestMapping("/v2/serviceHystrix")
-  public String remoteServiceHystrix(@RequestParam Long timeout, @RequestParam Double errors) {
-    return remoteService.callServiceHystrix(timeout, errors);
+  public String remoteServiceHystrix(@RequestParam Long timeout, @RequestParam Double errors,
+      @RequestParam(defaultValue = "0.0") Double input) {
+    return remoteService.callServiceHystrix(timeout, errors, input);
   }
 }
