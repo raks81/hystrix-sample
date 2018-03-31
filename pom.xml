@@ -26,21 +26,20 @@
       <artifactId>spring-cloud-starter-hystrix</artifactId>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.cloud</groupId>-->
-      <!--<artifactId>spring-cloud-starter-eureka-server </artifactId>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-eureka-server </artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>org.springframework.boot</groupId>-->
-      <!--<artifactId>spring-boot-starter-actuator</artifactId>-->
-    <!--</dependency>-->
-    <!-- https://mvnrepository.com/artifact/com.netflix.hystrix/hystrix-core -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
     <!--<dependency>-->
       <!--<groupId>com.netflix.hystrix</groupId>-->
       <!--<artifactId>hystrix-core</artifactId>-->
@@ -67,11 +66,11 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.netflix.hystrix</groupId>
-      <artifactId>hystrix-servo-metrics-publisher</artifactId>
-      <version>1.5.12</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.netflix.hystrix</groupId>-->
+      <!--<artifactId>hystrix-servo-metrics-publisher</artifactId>-->
+      <!--<version>1.5.12</version>-->
+    <!--</dependency>-->
   </dependencies>
 
   <dependencyManagement>

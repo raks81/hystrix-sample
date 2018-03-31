@@ -20,12 +20,29 @@ public class ClientServiceAnnotations {
     return builder.build();
   }
 
+  /**
+   * The endpoint without Hystrix
+   *
+   *
+   * @param timeout
+   * @param errors
+   * @param input
+   * @return
+   */
   @RequestMapping("/v2/service")
   public String remoteService(@RequestParam Long timeout, @RequestParam Double errors,
       @RequestParam(defaultValue = "0.0") Double input) {
     return remoteService.callService(timeout, errors, input);
   }
 
+  /**
+   * The endpoint WITH Hystrix
+   *
+   * @param timeout
+   * @param errors
+   * @param input
+   * @return
+   */
   @RequestMapping("/v2/serviceHystrix")
   public String remoteServiceHystrix(@RequestParam Long timeout, @RequestParam Double errors,
       @RequestParam(defaultValue = "0.0") Double input) {

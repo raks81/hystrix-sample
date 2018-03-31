@@ -19,6 +19,14 @@ public class RemoteServiceInvoker {
     return new RestTemplate();
   }
 
+  /**
+   * This version of the client invokes the remote service without Hystrix
+   *
+   * @param timeout
+   * @param errors
+   * @param input
+   * @return
+   */
   public String callService(Long timeout, Double errors, Double input) {
     return restTemplate
         .getForObject(
@@ -27,8 +35,17 @@ public class RemoteServiceInvoker {
             String.class);
   }
 
+  /**
+   * This version of the client invokes the service WITH Hystrix
+   *
+   * @param timeout
+   * @param errors
+   * @param input
+   * @return
+   */
   @HystrixCommand(fallbackMethod = "handleBadService", commandProperties = {
-      @HystrixProperty(name = "execution.isolation.thread.interruptOnTimeout", value = "true")
+      @HystrixProperty(name = "execution.isolation.thread.interruptOnTimeout", value = "true"),
+      @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
   })
   public String callServiceHystrix(Long timeout, Double errors, Double input) {
     return restTemplate

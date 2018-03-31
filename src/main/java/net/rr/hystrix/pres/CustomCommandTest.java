@@ -2,6 +2,7 @@ package net.rr.hystrix.pres;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import rx.Observable;
 
 public class CustomCommandTest {
 
@@ -31,5 +32,12 @@ public class CustomCommandTest {
     System.out.println("Printing 2");
     System.out.println(resultAsync2.get());
     System.out.println(new CustomCommandAnnotations().makeDownstreamCall());
+
+
+    Observable<String> observable = new CustomCommand("test").observe();
+
+
+
+    System.out.println(observable.toBlocking().first());
   }
 }

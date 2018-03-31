@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.netflix.hystrix.Hystrix;
@@ -22,59 +23,52 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.MOCK)
 public class RemoteServiceInvokerTest {
 
-  @Autowired
-  RemoteServiceInvoker invoker;
-
   @Rule
   public WireMockRule rule = new WireMockRule(options().port(8080));
 
+  @Autowired
+  private RemoteServiceInvoker invoker;
+
+  private static String FALLBACK_RESPONSE = "-1";
+
+  private static String SUCCESS_RESPONSE = "100";
+
   @Test
   public void testCallServiceHystrixForSuccess() {
+    long delay = 200;
     Hystrix.reset();
-    rule.stubFor(get(urlEqualTo("/remote?timeout=200&errors=0.0&input=1.0")).willReturn(
+    rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
         aResponse()
             .withStatus(200)
-            .withFixedDelay(200)
-            .withBody("-100")));
-    final String result = invoker.callServiceHystrix(200l, 0.0, 1.0);
-    System.out.println(result);
+            .withFixedDelay((int) delay)
+            .withBody(SUCCESS_RESPONSE)));
+    final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+    assertEquals(SUCCESS_RESPONSE, result);
   }
 
   @Test
   public void testCallServiceHystrixFor2SecondDelay() {
+    long delay = 2000;
     Hystrix.reset();
-    rule.stubFor(get(urlEqualTo("/remote?timeout=2000&errors=0.0&input=1.0")).willReturn(
+    rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
         aResponse()
             .withStatus(200)
-            .withFixedDelay(2000)
-            .withBody("-100")));
-    final String result = invoker.callServiceHystrix(2000l, 0.0, 1.0);
-    System.out.println(result);
+            .withFixedDelay((int) delay)
+            .withBody(SUCCESS_RESPONSE)));
+    final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+    assertEquals(FALLBACK_RESPONSE, result);
   }
 
   @Test
   public void testCallServiceHystrixFor500Response() {
+    long delay = 200;
     Hystrix.reset();
-    rule.stubFor(get(urlEqualTo("/remote?timeout=200&errors=0.0&input=1.0")).willReturn(
+    rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
         aResponse()
             .withStatus(500)
-            .withFixedDelay(200)
-            .withBody("-100")));
-    final String result = invoker.callServiceHystrix(200l, 0.0, 1.0);
-    System.out.println(result);
-  }
-
-  @Test
-  public void testCallServiceHystrixForConcurrentRequests() {
-    Hystrix.reset();
-    rule.stubFor(get(urlEqualTo("/remote?timeout=200&errors=0.0&input=1.0")).willReturn(
-        aResponse()
-            .withStatus(500)
-            //.withFixedDelay(200)
-            .withBody("-100")));
-    for (int i = 0; i < 10; i++) {
-      final String result = invoker.callServiceHystrix(200l, 0.0, 1.0);
-      System.out.println(result);
-    }
+            .withFixedDelay((int) delay)
+            .withBody("Error in response")));
+    final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+    assertEquals(FALLBACK_RESPONSE, result);
   }
 }

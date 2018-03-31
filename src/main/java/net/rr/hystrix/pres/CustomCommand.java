@@ -24,10 +24,12 @@ public class CustomCommand extends HystrixCommand<String> {
   @Override
   protected String run() {
     // Make the downstream remote call here
-    try {
-      Thread.sleep(4000);
-    } catch (InterruptedException e) {
-    }
+    // ...
     return "Hello from " + name;
+  }
+
+  @Override
+  protected String getFallback() {
+    return "Hello from fallback";
   }
 }

@@ -7,19 +7,39 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 public class RemoteController {
 
-  private final Semaphore semaphore = new Semaphore(20);
+  // Only 5 concurrent requests to the remote service is possible
+  private final Semaphore semaphore = new Semaphore(5);
 
   private Random random = new Random();
 
+
+
+  /**
+   *  - Simulate max concurrency : Only allows 20 concurrent requests
+   *  - Simulate errors          : 'errors' % of requests will be errors
+   *  - Simulate latency         : will take about 'timeout' millis to respond
+   *
+   * @param timeout
+   * @param errors
+   * @param input
+   * @return
+   */
   @GetMapping("/remote")
   public String remoteService(@RequestParam Long timeout, @RequestParam Double errors,
       @RequestParam(defaultValue = "0.0") Double input) {
     try {
       semaphore.acquire();
-      Thread.sleep((long) (timeout + random.nextGaussian() * random.nextGaussian()));
+
+      // Sleep for around 'timeout' milli seconds
+      long to =(long) (timeout + random.nextGaussian() * random.nextGaussian());
+      System.out.println(to);
+      Thread.sleep(to);
+
+      // Simulate errors based on 'errors'
       if (Math.random() * 100 < errors) {
         throw new ResourceNotFoundException();
       }
