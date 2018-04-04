@@ -2,7 +2,6 @@ package net.rr.hystrix.pres;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 
 public class CustomCommand extends HystrixCommand<String> {
@@ -11,13 +10,10 @@ public class CustomCommand extends HystrixCommand<String> {
 
   public CustomCommand(String name) {
     super(Setter
-        .withGroupKey(HystrixCommandGroupKey.Factory.asKey("CustomCommandGroup")).andCommandKey(
-            HystrixCommandKey.Factory.asKey("SomeCommand")).andCommandPropertiesDefaults(
-            HystrixCommandProperties.Setter().withCircuitBreakerEnabled(true)
-                .withExecutionTimeoutInMilliseconds(5000)
-                .withCircuitBreakerErrorThresholdPercentage(50)
-                .withCircuitBreakerRequestVolumeThreshold(10)
-                .withCircuitBreakerSleepWindowInMilliseconds(5_000)));
+        .withGroupKey(HystrixCommandGroupKey.Factory.asKey("CustomCommandGroup"))
+        .andCommandPropertiesDefaults(
+            HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(5000)
+                .withCircuitBreakerErrorThresholdPercentage(50)));
     this.name = name;
   }
 

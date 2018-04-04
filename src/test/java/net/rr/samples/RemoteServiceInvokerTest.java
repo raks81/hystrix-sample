@@ -37,30 +37,38 @@ public class RemoteServiceInvokerTest {
   public void testCallServiceHystrixForSuccess() {
     long delay = 200;
     Hystrix.reset();
+
     rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
         aResponse()
             .withStatus(200)
             .withFixedDelay((int) delay)
             .withBody(SUCCESS_RESPONSE)));
+
     final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+
     assertEquals(SUCCESS_RESPONSE, result);
   }
+
 
   @Test
   public void testCallServiceHystrixFor2SecondDelay() {
     long delay = 2000;
+
     Hystrix.reset();
     rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
         aResponse()
             .withStatus(200)
             .withFixedDelay((int) delay)
             .withBody(SUCCESS_RESPONSE)));
+
     final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+
     assertEquals(FALLBACK_RESPONSE, result);
   }
 
   @Test
   public void testCallServiceHystrixFor500Response() {
+
     long delay = 200;
     Hystrix.reset();
     rule.stubFor(get(urlEqualTo("/remote?timeout=" + delay + "&errors=0.0&input=1.0")).willReturn(
@@ -68,7 +76,9 @@ public class RemoteServiceInvokerTest {
             .withStatus(500)
             .withFixedDelay((int) delay)
             .withBody("Error in response")));
+
     final String result = invoker.callServiceHystrix(delay, 0.0, 1.0);
+
     assertEquals(FALLBACK_RESPONSE, result);
   }
 }

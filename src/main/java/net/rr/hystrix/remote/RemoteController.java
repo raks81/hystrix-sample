@@ -17,7 +17,6 @@ public class RemoteController {
   private Random random = new Random();
 
 
-
   /**
    *  - Simulate max concurrency : Only allows 20 concurrent requests
    *  - Simulate errors          : 'errors' % of requests will be errors
@@ -35,7 +34,7 @@ public class RemoteController {
       semaphore.acquire();
 
       // Sleep for around 'timeout' milli seconds
-      long to =(long) (timeout + random.nextGaussian() * random.nextGaussian());
+      long to = (long) (timeout + random.nextGaussian());
       System.out.println(to);
       Thread.sleep(to);
 

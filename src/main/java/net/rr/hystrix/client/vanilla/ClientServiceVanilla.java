@@ -25,8 +25,7 @@ public class ClientServiceVanilla {
             HystrixCommandKey.Factory.asKey("SomeCommand")).andCommandPropertiesDefaults(
             HystrixCommandProperties.Setter().withCircuitBreakerEnabled(true)
                 .withCircuitBreakerErrorThresholdPercentage(50)
-                .withCircuitBreakerRequestVolumeThreshold(10)
-                .withCircuitBreakerSleepWindowInMilliseconds(5_000));
+                .withExecutionTimeoutInMilliseconds(2000));
 
     HystrixCommand<String> cmd = new HystrixCommand<String>(key) {
       @Override
